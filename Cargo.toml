@@ -1,0 +1,27 @@
+[package]
+name = "weft"
+version = "0.1.0"
+edition = "2021"
+description = "Live terminal board and monitor for all your coding-agent sessions"
+license = "MIT"
+
+[[bin]]
+name = "weft"
+path = "src/main.rs"
+
+[dependencies]
+ratatui = "0.29"
+crossterm = "0.28"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sysinfo = "0.33"
+memchr = "2"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+unicode-width = "0.2"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
