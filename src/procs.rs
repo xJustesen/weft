@@ -65,7 +65,7 @@ impl Procs {
     /// Every couple of seconds: a bare process-table listing (no per-process stats)
     /// to discover new children and unregistered `claude` binaries.
     pub fn refresh(&mut self, pids: &[u32]) {
-        let full = self.last_full.map_or(true, |t| t.elapsed() >= FULL_EVERY);
+        let full = self.last_full.is_none_or(|t| t.elapsed() >= FULL_EVERY);
         if full {
             self.sys
                 .refresh_processes_specifics(ProcessesToUpdate::All, true, ProcessRefreshKind::nothing());
@@ -174,5 +174,11 @@ impl Procs {
             .process(Pid::from_u32(pid))
             .and_then(|p| p.kill_with(Signal::Term))
             .unwrap_or(false)
+    }
+}
+
+impl Default for Procs {
+    fn default() -> Self {
+        Self::new()
     }
 }

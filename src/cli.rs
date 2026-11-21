@@ -158,8 +158,8 @@ fn dump_once(rx: &mpsc::Receiver<model::Snapshot>, cmd_tx: &mpsc::Sender<Cmd>, w
         die("no snapshot received");
     };
     println!(
-        "{:<6} {:<6} {:<28} {:<22} {:<12} {:>7} {:>8} {:>7} {:>5} {:>5} {:>4} {:>5} {:>6}  {}",
-        "pid", "status", "name", "project", "model", "ctx", "in", "out", "turns", "tools", "err", "cpu%", "rss", "now"
+        "{:<6} {:<6} {:<28} {:<22} {:<12} {:>7} {:>8} {:>7} {:>5} {:>5} {:>4} {:>5} {:>6}  now",
+        "pid", "status", "name", "project", "model", "ctx", "in", "out", "turns", "tools", "err", "cpu%", "rss"
     );
     for v in &s.sessions {
         let now = v.running.first().map(|r| format!("{} {}", r.name, r.summary)).unwrap_or_default();

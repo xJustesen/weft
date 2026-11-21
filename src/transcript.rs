@@ -394,10 +394,8 @@ impl Tailer {
             "summary" => {
                 s.compactions += 1;
             }
-            "system" => {
-                if e.subtype.as_deref() == Some("compact_boundary") {
-                    s.compactions += 1;
-                }
+            "system" if e.subtype.as_deref() == Some("compact_boundary") => {
+                s.compactions += 1;
             }
             _ => {}
         }

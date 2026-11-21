@@ -130,7 +130,7 @@ fn guess_transcript(cfg: &Config, cwd: &str, start_time_s: u64) -> Option<(Strin
         if mtime + 5 < start_time_s {
             continue;
         }
-        if best.as_ref().map_or(true, |(t, _)| mtime > *t) {
+        if best.as_ref().is_none_or(|(t, _)| mtime > *t) {
             best = Some((mtime, p));
         }
     }
@@ -210,7 +210,7 @@ pub fn run(mut cfg: Config, tx: Sender<Snapshot>, rx: Receiver<Cmd>) {
         let now = now_ms();
 
         // ---- 0. desktop metadata (throttled) -------------------------------
-        if last_desktop.map_or(true, |t| t.elapsed() >= Duration::from_secs(3)) {
+        if last_desktop.is_none_or(|t| t.elapsed() >= Duration::from_secs(3)) {
             desktop.refresh(&cfg.desktop_dir);
             desktop_by_id = desktop.by_any_id();
             last_desktop = Some(Instant::now());
@@ -264,7 +264,7 @@ pub fn run(mut cfg: Config, tx: Sender<Snapshot>, rx: Receiver<Cmd>) {
         }
         // drop long-ended
         let keep_ms = cfg.keep_ended.as_millis() as u64;
-        tracked.retain(|_, t| t.ended_at_ms.map_or(true, |e| now.saturating_sub(e) < keep_ms));
+        tracked.retain(|_, t| t.ended_at_ms.is_none_or(|e| now.saturating_sub(e) < keep_ms));
 
         // ---- 3. transcripts ----------------------------------------------
         // resolve paths (throttled)
@@ -272,7 +272,7 @@ pub fn run(mut cfg: Config, tx: Sender<Snapshot>, rx: Receiver<Cmd>) {
             if t.main.is_some() || t.ended_at_ms.is_some() {
                 continue;
             }
-            if t.last_path_probe.map_or(false, |p| p.elapsed() < Duration::from_secs(2)) {
+            if t.last_path_probe.is_some_and(|p| p.elapsed() < Duration::from_secs(2)) {
                 continue;
             }
             t.last_path_probe = Some(Instant::now());
@@ -290,7 +290,7 @@ pub fn run(mut cfg: Config, tx: Sender<Snapshot>, rx: Receiver<Cmd>) {
         // subagent discovery (throttled)
         for t in tracked.values_mut() {
             let Some(dir) = t.sub_dir.clone() else { continue };
-            if t.last_sub_scan.map_or(false, |p| p.elapsed() < Duration::from_secs(3)) {
+            if t.last_sub_scan.is_some_and(|p| p.elapsed() < Duration::from_secs(3)) {
                 continue;
             }
             t.last_sub_scan = Some(Instant::now());
@@ -331,7 +331,7 @@ pub fn run(mut cfg: Config, tx: Sender<Snapshot>, rx: Receiver<Cmd>) {
         for t in tracked.values_mut() {
             let cur_in = t.totals_in();
             let cur_out = t.totals_out();
-            let loaded = t.main.as_ref().map_or(false, |m| m.loaded);
+            let loaded = t.main.as_ref().is_some_and(|m| m.loaded);
             // first sample after a (re)load must not spike with the whole history
             let (di, do_) = if !loaded || t.hist_in.is_empty() || (t.prev_in == 0 && t.prev_out == 0) {
                 (0.0, 0.0)
@@ -451,7 +451,7 @@ pub fn run(mut cfg: Config, tx: Sender<Snapshot>, rx: Receiver<Cmd>) {
                 hist_out: t.hist_out.iter().copied().collect(),
                 transcript_bytes: t.main.as_ref().map_or(0, |m| m.bytes),
                 transcript_found: t.main.is_some(),
-                loading: t.main.as_ref().map_or(false, |m| !m.loaded),
+                loading: t.main.as_ref().is_some_and(|m| !m.loaded),
                 ended_at_ms: t.ended_at_ms,
                 desktop_id: desk.map(|d| d.local_id.clone()).or_else(|| reg.and_then(|r| r.host_session_id.clone())),
                 needs_you: desk.is_some_and(|d| d.needs_attention()) && status != Status::Busy,

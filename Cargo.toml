@@ -1,6 +1,6 @@
 [package]
 name = "weft"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Live terminal board and monitor for all your coding-agent sessions"
 license = "MIT"
