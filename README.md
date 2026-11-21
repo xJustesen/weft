@@ -1,3 +1,7 @@
+<p align="center">
+  <img alt="weft logo" src="assets/logo.svg" width="128">
+</p>
+
 <h1 align="center">weft</h1>
 
 <p align="center">A live terminal board for every Claude Code session on your machine.</p>
