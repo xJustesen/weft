@@ -69,6 +69,8 @@ weft [OPTIONS]
 
 ### Board
 
+<img alt="weft monitor pane" src="assets/board.svg" width="100%">
+
 Live sessions as numbered cards. A session waits for you when the desktop app's turn summary says
 it is blocked or ready for review. Each card shows what the session does now, what it needs, or its
 last reply. `enter` or `1`–`9` jumps to the session; `d` toggles the detail box.
