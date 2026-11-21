@@ -89,7 +89,7 @@ pub fn scan(roots: &[String], in_use: &[String]) -> Vec<Worktree> {
         let jobs: Vec<_> = found.into_iter().map(|(repo, p)| sc.spawn(move || inspect(&repo, p))).collect();
         jobs.into_iter().filter_map(|j| j.join().ok()).collect()
     });
-    out.sort_by(|a, b| b.modified_ms.cmp(&a.modified_ms));
+    out.sort_by_key(|a| std::cmp::Reverse(a.modified_ms));
     out
 }
 

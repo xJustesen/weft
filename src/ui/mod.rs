@@ -161,7 +161,7 @@ fn dual_graph(buf: &mut Buffer, area: Rect, hist_in: &[f32], hist_out: &[f32], c
     if area.height < 2 {
         return;
     }
-    let top_h = (area.height + 1) / 2;
+    let top_h = area.height.div_ceil(2);
     let top = Rect::new(area.x, area.y, area.width, top_h);
     let bot = Rect::new(area.x, area.y + top_h, area.width, area.height - top_h);
     let max_in = window_max(hist_in, area.width, 50.0);
