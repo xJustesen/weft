@@ -18,9 +18,6 @@
   <a href="#-how-it-works">How it works</a>
 </h4>
 
-<p align="center">
-  <img alt="weft board pane" src="assets/board.svg" width="100%">
-</p>
 
 weft shows what waits for you, what works and what is idle across all your Claude Code sessions,
 desktop and terminal alike, and jumps to any of them with one key. It reads only what Claude Code
